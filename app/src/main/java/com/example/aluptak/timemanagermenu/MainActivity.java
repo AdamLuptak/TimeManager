@@ -12,6 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,6 +43,51 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Thread myThread = null;
+        Runnable myRunnableThread = new CountDownRunner();
+        myThread = new Thread(myRunnableThread);
+        myThread.start();
+
+    }
+
+    public void doWork(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    TextView txtCurrentTime1 = (TextView) findViewById(R.id.time1);
+                    TextView txtCurrentTime2 = (TextView) findViewById(R.id.time2);
+                    TextView txtCurrentTime3 = (TextView) findViewById(R.id.time3);
+                    Date dt = new Date();
+                    int hours = dt.getHours();
+                    int minutes = dt.getMinutes();
+                    int seconds = dt.getSeconds();
+                    String curTime = hours + ":" + minutes + ":" + seconds;
+                    txtCurrentTime1.setText(curTime);
+                    txtCurrentTime2.setText(curTime);
+                    txtCurrentTime3.setText(curTime);
+                }catch (Exception e){
+
+                }
+            }
+        });
+    }
+
+    class CountDownRunner implements Runnable{
+        @Override
+        public void run() {
+            while(!Thread.currentThread().isInterrupted()){
+                try {
+                    doWork();
+                    Thread.sleep(1000);
+                }catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
+                }catch (Exception e){
+
+                }
+            }
+        }
     }
 
     @Override
