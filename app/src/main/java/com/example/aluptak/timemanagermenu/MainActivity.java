@@ -1,6 +1,10 @@
 package com.example.aluptak.timemanagermenu;
 
+import android.annotation.TargetApi;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -12,12 +16,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+    ImageButton btn;
+    Boolean inWork = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,49 +53,74 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //start vlastneho vlakna
         Thread myThread = null;
         Runnable myRunnableThread = new CountDownRunner();
         myThread = new Thread(myRunnableThread);
         myThread.start();
 
+        //listener to button
+        btn = (ImageButton) findViewById(R.id.button_work);
+        btn.setOnClickListener(this);
+
     }
 
-    public void doWork(){
+    public void doWork() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
                     TextView txtCurrentTime1 = (TextView) findViewById(R.id.time1);
-                    TextView txtCurrentTime2 = (TextView) findViewById(R.id.time2);
-                    TextView txtCurrentTime3 = (TextView) findViewById(R.id.time3);
-                    Date dt = new Date();
-                    int hours = dt.getHours();
-                    int minutes = dt.getMinutes();
-                    int seconds = dt.getSeconds();
-                    String curTime = hours + ":" + minutes + ":" + seconds;
-                    txtCurrentTime1.setText(curTime);
-                    txtCurrentTime2.setText(curTime);
-                    txtCurrentTime3.setText(curTime);
-                }catch (Exception e){
+                    String time = getTime();
+                    txtCurrentTime1.setText("Current time: " + time);
+                } catch (Exception e) {
 
                 }
             }
         });
     }
 
-    class CountDownRunner implements Runnable{
+    @NonNull
+    private String getTime() {
+        Date dt = Calendar.getInstance().getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH.mm.ss");
+        return formatter.format(dt);
+    }
+
+    class CountDownRunner implements Runnable {
         @Override
         public void run() {
-            while(!Thread.currentThread().isInterrupted()){
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     doWork();
                     Thread.sleep(1000);
-                }catch (InterruptedException e){
+                } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
             }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        updateStatus();
+    }
+
+    private void updateStatus() {
+        TextView txtCurrentTime2 = (TextView) findViewById(R.id.time2);
+        TextView txtCurrentTime3 = (TextView) findViewById(R.id.time3);
+        String time = getTime();
+        if (!inWork) {
+            btn.setBackgroundResource(R.drawable.stop);
+            txtCurrentTime2.setText("Arrival time: " + time);
+            txtCurrentTime3.setText("");
+            inWork = true;
+        } else {
+            btn.setBackgroundResource(R.drawable.play);
+            txtCurrentTime3.setText("Leaving time: " + time);
+            inWork = false;
         }
     }
 
