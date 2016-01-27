@@ -41,4 +41,14 @@
         android:layout_below="@+id/time2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="37dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addArrivalTime"
+        android:id="@+id/button"
+        android:layout_marginTop="131dp"
+        android:layout_below="@+id/time3"
+        android:layout_centerHorizontal="true"
+        android:onClick="addTime" />
 </RelativeLayout>

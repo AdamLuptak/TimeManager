@@ -13,14 +13,51 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import com.example.aluptak.timemanagermenu.entities.TestingClass;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    /**
+     * if true button will add arrivalTime else add leave time
+     */
+    private boolean addArrivalTime = true;
+    DBHelper myDb;
+
+    public void addTime(View view) throws ParseException {
+        Button bt = (Button) findViewById(R.id.button);
+        if (addArrivalTime) {
+            bt.setText(R.string.addLeaveTime);
+        } else {
+            bt.setText(R.string.addArrivalTime);
+        }
+        addArrivalTime = !addArrivalTime;
+        myDb = new DBHelper(this);
+        if(myDb.insertContact(new Date(),new Date(),1000000l)){
+            Toast.makeText(this, "Dalo do databazi", Toast.LENGTH_SHORT).show();
+        }
+
+        Iterator itr = myDb.getAllCotacts().iterator();
+        while(itr.hasNext()){
+            Object element = itr.next();
+            String h = element.toString();
+            DateFormat format = new SimpleDateFormat("MMMM d, yyyy");
+            Date date = format.parse(h);
+            Log.e("moja", date.toString());
+        }
+
+
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +90,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void doWork(){
+    public void doWork() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -69,28 +106,28 @@ public class MainActivity extends AppCompatActivity
                     txtCurrentTime1.setText(curTime);
                     txtCurrentTime2.setText(curTime);
                     txtCurrentTime3.setText(curTime);
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
             }
         });
     }
 
-    class CountDownRunner implements Runnable{
+    class CountDownRunner implements Runnable {
         @Override
         public void run() {
-            while(!Thread.currentThread().isInterrupted()){
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     doWork();
                     Thread.sleep(1000);
-                }catch (InterruptedException e){
+                } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
             }
         }
->>>>>>> master
+
     }
 
     @Override

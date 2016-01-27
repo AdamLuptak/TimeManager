@@ -3,6 +3,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
+    <string name="addArrivalTime">Add arrival time</string>
+    <string name="addLeaveTime">Add leave time</string>
     <string name="action_settings">Settings</string>
 </resources>
