@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by aluptak on 26/01/2016.
@@ -112,5 +113,36 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToNext();
         }
         return array_list;
+    }
+
+    public List<WorkTimeRecord> getAllWorkTimeRecords(){
+        List<WorkTimeRecord> workTimeRecordList = new ArrayList<WorkTimeRecord>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from WorkingTimeRecords", null);
+        res.moveToFirst();
+        String nam = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
+        WorkTimeRecord wk = new WorkTimeRecord();
+
+        while (res.isAfterLast() == false) {
+
+            String millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
+            Long testMillis = Long.parseLong(millistString);
+
+            wk.setArrivalTimeDate(new Date(testMillis));
+            millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_LEAVEDATE));
+
+            if (millistString != null) {
+                testMillis = Long.parseLong(millistString);
+                wk.setLeaveTimeDate(new Date(testMillis));
+            }
+
+            testMillis = res.getLong(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_OVERTIME));
+            if (testMillis != 0) {
+                wk.getOvertimeMillis(testMillis);
+            }
+            workTimeRecordList.add(wk);
+            res.moveToNext();
+        }
+        return workTimeRecordList;
     }
 }

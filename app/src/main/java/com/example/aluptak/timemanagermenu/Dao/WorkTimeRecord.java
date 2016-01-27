@@ -24,6 +24,9 @@ public class WorkTimeRecord implements Serializable {
         this.overtime = overtime;
     }
 
+    public WorkTimeRecord() {
+    }
+
     public WorkTimeRecord(Date arrivalDate) {
         this.arrivalDate = arrivalDate;
     }
@@ -41,7 +44,7 @@ public class WorkTimeRecord implements Serializable {
     }
 
     public void setLeaveTimeDate(Date leaveTimeDate) {
-        this.leaveDate = leaveTimeDate;
+        if (leaveTimeDate != null) this.leaveDate = leaveTimeDate;
     }
 
     public String getArrivalTime() {
@@ -88,5 +91,14 @@ public class WorkTimeRecord implements Serializable {
 
     public void setDayOfWeek(int dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
+    }
+
+    @Override
+    public String toString() {
+        return "WorkTimeRecord{" +
+                "arrivalDate=" + arrivalDate +
+                ", leaveDate=" + leaveDate +
+                ", overTime= " + overTimeMillis +
+                '}';
     }
 }

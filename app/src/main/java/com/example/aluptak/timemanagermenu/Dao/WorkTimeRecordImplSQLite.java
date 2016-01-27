@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.aluptak.timemanagermenu.R;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao {
 
     @Override
     public List<WorkTimeRecord> getAllWorkForThisWeek() {
-        return null;
+        return myDb.getAllWorkTimeRecords();
     }
 
     @Override
@@ -64,6 +65,7 @@ public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao {
 
     /**
      * Function put to database new WorkTimeRecord if not succes Allert box will pop up
+     *
      * @param workTimeRecord
      */
     @Override

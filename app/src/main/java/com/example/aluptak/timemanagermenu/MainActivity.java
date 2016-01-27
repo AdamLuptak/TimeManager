@@ -114,7 +114,6 @@ public class MainActivity extends AppCompatActivity
                     String time = getTime();
                     txtCurrentTime1.setText("Current time: " + time);
                 } catch (Exception e) {
-
                 }
             }
         });
@@ -162,6 +161,13 @@ public class MainActivity extends AppCompatActivity
                 if (addTime()) {
                     inWork = true;
                     btn.setBackgroundResource(R.drawable.stop);
+                    Iterator it =  workTimeRecordDao.getAllWorkForThisWeek().iterator();
+                    String forShow = "";
+                    while (it.hasNext()){
+                        WorkTimeRecord wk = (WorkTimeRecord) it.next();
+                          forShow += wk.toString();
+                    }
+                    Toast.makeText(this,forShow,Toast.LENGTH_SHORT).show();
                 } else {
                     btn.setBackgroundResource(R.drawable.play);
                     inWork = false;
