@@ -7,6 +7,10 @@ import android.widget.Toast;
  * Created by vmino on 27/01/2016.
  */
 public class WorkTimeController {
+    private String overTime;
+    private String leaveTime;
+    private String leaveTimeWithOT;
+
 
     public String getOvertime() {
 // TODO: 27/01/2016
@@ -23,13 +27,20 @@ public class WorkTimeController {
         return "16:05";
     }
 
+    /**
+     * Writes current time into DB by DBHelper as ArrivalTime
+     * counts new leaveTime, leaveTimeWithOT
+     */
     public void writeArrivalTime() {
-// TODO: 27/01/2016  \
+// TODO: 27/01/2016
     }
 
+    /**
+     * Writes current time into DB by DBHelper as LeaveTime
+     * counts new OverTime
+     */
     public void writeLeaveTime() {
-// TODO: 27/01/2016  
+// TODO: 27/01/2016
     }
-
 
 }
