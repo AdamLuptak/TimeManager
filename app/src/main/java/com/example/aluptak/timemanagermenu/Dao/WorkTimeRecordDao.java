@@ -1,5 +1,7 @@
 package com.example.aluptak.timemanagermenu.Dao;
 
+import android.content.Context;
+
 import java.util.Date;
 import java.util.List;
 
@@ -61,8 +63,15 @@ public interface WorkTimeRecordDao {
 
     /**
      * Create new record in DB
-     *
      * @param workTimeRecord
+     * @return true correct false incorrect
      */
-    public void CreateWorkTimeRecord(WorkTimeRecord workTimeRecord);
+    public boolean createWorkTimeRecord(WorkTimeRecord workTimeRecord);
+
+    /**
+     * Return yesterday WorkTimeRecord object
+     * @return WorkTimeRecord
+     */
+    public WorkTimeRecord getYesterdayWorkTimeRecord();
+
 }

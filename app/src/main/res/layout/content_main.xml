@@ -48,5 +48,4 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="46dp"
         android:onClick="onClick" />
-
 </RelativeLayout>

@@ -26,10 +26,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
-//        this.getWritableDatabase().execSQL(
-//                "create table WorkingTimeRecords " +
-//                        "(id integer primary key autoincrement, arrivalDate DATE, leaveDate DATE, overtime INTEGER)"
-//        );
+        this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS WorkingTimeRecords");
+        this.getWritableDatabase().execSQL(
+                "create table WorkingTimeRecords " +
+                        "(id integer primary key autoincrement, arrivalDate TEXT, leaveDate TEXT, overtime INTEGER)"
+        );
     }
 
     @Override
@@ -37,7 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         db.execSQL(
                 "create table WorkingTimeRecords " +
-                        "(id integer primary key autoincrement, arrivalDate Text, leaveDate DATE, overtime INTEGER)"
+                        "(id integer primary key autoincrement, arrivalDate TEXT, leaveDate TEXT, overtime INTEGER)"
         );
     }
 
@@ -48,14 +49,23 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertContact(Date arrivalDate, Date leaveTime, Long overTime) {
+    public boolean insertContact(String arrivalDate, String leaveTime, Long overTime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("arrivalDate", String.valueOf(arrivalDate));
-        contentValues.put("leaveDate", String.valueOf(leaveTime));
+        contentValues.put("arrivalDate", arrivalDate);
+        contentValues.put("leaveDate", leaveTime);
         contentValues.put("overtime", overTime);
-        db.insert("WorkingTimeRecords", null, contentValues);
-        return true;
+        long result = db.insert("WorkingTimeRecords", null, contentValues);
+        return (result != -1) ? true : false;
+    }
+
+    public boolean insertStartWorkTime(String arrivalDate, Long overTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("arrivalDate", arrivalDate);
+        contentValues.put("overtime", overTime);
+        long result = db.insert("WorkingTimeRecords", null, contentValues);
+        return (result != -1) ? true : false;
     }
 
     public Cursor getData(int id) {

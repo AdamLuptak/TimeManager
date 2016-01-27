@@ -1,5 +1,7 @@
 package com.example.aluptak.timemanagermenu;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -18,7 +20,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.example.aluptak.timemanagermenu.Dao.DBHelper;
+import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecord;
+import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecordDao;
+import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecordImplSQLite;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -37,28 +43,30 @@ public class MainActivity extends AppCompatActivity
      */
     private boolean addArrivalTime = true;
     DBHelper myDb;
+    WorkTimeRecordImplSQLite workTimeRecordDao;
 
-    public void addTime(View view) throws ParseException {
+    public boolean addTime() throws ParseException {
+//        myDb = new DBHelper(this);
+//        if(myDb.insertContact("1451631600000","1451658600000",0L)){
+//            Toast.makeText(this, "Dalo do databazi", Toast.LENGTH_SHORT).show();
+//        }
+        long testMillisArrived = 1451631600000L;
+        return workTimeRecordDao.createWorkTimeRecord(new WorkTimeRecord(new Date(testMillisArrived)));
 
-        addArrivalTime = !addArrivalTime;
-        myDb = new DBHelper(this);
-        if(myDb.insertContact(new Date(),new Date(),1000000l)){
-            Toast.makeText(this, "Dalo do databazi", Toast.LENGTH_SHORT).show();
-        }
-
-        Iterator itr = myDb.getAllCotacts().iterator();
-        while(itr.hasNext()){
-            Object element = itr.next();
-            String h = element.toString();
-            DateFormat format = new SimpleDateFormat("MMMM d, yyyy");
-            Date date = format.parse(h);
-            Log.e("moja", date.toString());
-        }
+        // Iterator itr = myDb.getAllCotacts().iterator();
+//        while(itr.hasNext()){
+//            Object element = itr.next();
+//            String h = element.toString();
+//            DateFormat format = new SimpleDateFormat("MMMM d, yyyy");
+//            Date date = format.parse(h);
+//            Log.e("moja", date.toString());
+//        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -90,6 +98,10 @@ public class MainActivity extends AppCompatActivity
         //listener to button
         btn = (ImageButton) findViewById(R.id.button_work);
         btn.setOnClickListener(this);
+
+
+        //create DAO database
+        workTimeRecordDao = new WorkTimeRecordImplSQLite(new DBHelper(this));
 
     }
 
@@ -142,15 +154,45 @@ public class MainActivity extends AppCompatActivity
         TextView txtCurrentTime3 = (TextView) findViewById(R.id.time3);
         String time = getTime();
         if (!inWork) {
-            btn.setBackgroundResource(R.drawable.stop);
+
             txtCurrentTime2.setText("Arrival time: " + time);
             txtCurrentTime3.setText("");
-            inWork = true;
+
+            try {
+                if (addTime()) {
+                    inWork = true;
+                    btn.setBackgroundResource(R.drawable.stop);
+                } else {
+                    btn.setBackgroundResource(R.drawable.play);
+                    inWork = false;
+                    // prepare the alert box                  
+                    AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
+
+                    // set the message to display
+                    alertbox.setMessage("Error DB nothing is recorded please push button again a try to add arrival time");
+
+                    // add a neutral button to the alert box and assign a click listener
+                    alertbox.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+
+                        // click listener on the alert box
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            // the button was clicked
+                        }
+                    });
+                    // show it
+                    alertbox.show();
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+                inWork = false;
+            }
         } else {
             btn.setBackgroundResource(R.drawable.play);
             txtCurrentTime3.setText("Leaving time: " + time);
             inWork = false;
         }
+
     }
 
     @Override

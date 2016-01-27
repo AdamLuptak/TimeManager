@@ -1,16 +1,29 @@
 package com.example.aluptak.timemanagermenu.Dao;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.aluptak.timemanagermenu.R;
+
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by aluptak on 27/01/2016.
  */
-public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao  {
+public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao {
 
     DBHelper myDb;
 
-    public WorkTimeRecordImplSQLite(DBHelper myDb){
+    public WorkTimeRecordImplSQLite(DBHelper myDb) {
         this.myDb = myDb;
     }
 
@@ -49,8 +62,26 @@ public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao  {
 
     }
 
+    /**
+     * Function put to database new WorkTimeRecord if not succes Allert box will pop up
+     * @param workTimeRecord
+     */
     @Override
-    public void CreateWorkTimeRecord(WorkTimeRecord workTimeRecord) {
+    public boolean createWorkTimeRecord(WorkTimeRecord workTimeRecord) {
+        if (myDb.insertStartWorkTime(String.valueOf(workTimeRecord.getArrivalTimeDate().getTime()), 0L)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    @Override
+    public WorkTimeRecord getYesterdayWorkTimeRecord() {
+        SQLiteDatabase db = myDb.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from WorkingTimeRecords where id=" + 1 + "", null);
+        res.moveToFirst();
+        String nam = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
+        Toast.makeText(null, "pridal som do databazy " + nam, Toast.LENGTH_SHORT).show();
+        return null;
     }
 }

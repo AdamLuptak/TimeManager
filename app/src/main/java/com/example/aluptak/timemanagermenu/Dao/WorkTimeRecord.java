@@ -24,6 +24,10 @@ public class WorkTimeRecord implements Serializable {
         this.overtime = overtime;
     }
 
+    public WorkTimeRecord(Date arrivalDate) {
+        this.arrivalDate = arrivalDate;
+    }
+
     public Date getArrivalTimeDate() {
         return arrivalDate;
     }
@@ -63,7 +67,7 @@ public class WorkTimeRecord implements Serializable {
         if (leaveDate != null && arrivalDate != null) {
             Date diff = new Date(this.leaveDate.getTime() - this.arrivalDate.getTime());
             long checkForWorkingTimePeriod = diff.getTime() - WORKING_PERIOD;
-            this.overTimeMillis = (diff.getTime()+last) - WORKING_PERIOD;
+            this.overTimeMillis = (diff.getTime() + last) - WORKING_PERIOD;
             Date overTime = new Date(diff.getTime() - WORKING_PERIOD);
             return this.overTimeMillis;
         }
