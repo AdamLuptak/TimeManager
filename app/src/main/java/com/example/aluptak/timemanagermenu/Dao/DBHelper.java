@@ -1,4 +1,4 @@
-package com.example.aluptak.timemanagermenu;
+package com.example.aluptak.timemanagermenu.Dao;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,7 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         db.execSQL(
                 "create table WorkingTimeRecords " +
-                        "(id integer primary key autoincrement, arrivalDate DATE, leaveDate DATE, overtime INTEGER)"
+                        "(id integer primary key autoincrement, arrivalDate Text, leaveDate DATE, overtime INTEGER)"
         );
     }
 
