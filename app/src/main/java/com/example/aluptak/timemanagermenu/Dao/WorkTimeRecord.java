@@ -1,4 +1,4 @@
-package com.example.aluptak.timemanagermenu;
+package com.example.aluptak.timemanagermenu.Dao;
 
 import java.io.Serializable;
 import java.util.Date;

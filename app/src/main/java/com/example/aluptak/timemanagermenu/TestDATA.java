@@ -1,5 +1,7 @@
 package com.example.aluptak.timemanagermenu;
 
+import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecord;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
