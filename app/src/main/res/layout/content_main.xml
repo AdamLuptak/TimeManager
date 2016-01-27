@@ -15,8 +15,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/time1"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -25,8 +24,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/time2"
         android:layout_below="@+id/time1"
         android:layout_centerHorizontal="true"
@@ -35,20 +33,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/time3"
         android:layout_below="@+id/time2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="37dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/addArrivalTime"
-        android:id="@+id/button"
-        android:layout_marginTop="131dp"
+    <ImageButton
+        android:layout_width="192dp"
+        android:layout_height="192dp"
+        android:id="@+id/button_work"
+        android:background="@drawable/play"
         android:layout_below="@+id/time3"
         android:layout_centerHorizontal="true"
-        android:onClick="addTime" />
+        android:layout_marginTop="46dp"
+        android:onClick="onClick" />
+
 </RelativeLayout>

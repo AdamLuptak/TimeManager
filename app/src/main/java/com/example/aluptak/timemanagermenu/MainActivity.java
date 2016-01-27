@@ -1,6 +1,10 @@
 package com.example.aluptak.timemanagermenu;
 
+import android.annotation.TargetApi;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -14,17 +18,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+    ImageButton btn;
+    Boolean inWork = false;
 
     /**
      * if true button will add arrivalTime else add leave time
@@ -33,12 +41,7 @@ public class MainActivity extends AppCompatActivity
     DBHelper myDb;
 
     public void addTime(View view) throws ParseException {
-        Button bt = (Button) findViewById(R.id.button);
-        if (addArrivalTime) {
-            bt.setText(R.string.addLeaveTime);
-        } else {
-            bt.setText(R.string.addArrivalTime);
-        }
+
         addArrivalTime = !addArrivalTime;
         myDb = new DBHelper(this);
         if(myDb.insertContact(new Date(),new Date(),1000000l)){
@@ -53,11 +56,7 @@ public class MainActivity extends AppCompatActivity
             Date date = format.parse(h);
             Log.e("moja", date.toString());
         }
-
-
-
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +82,16 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Start updateTime thread
         Thread myThread = null;
         Runnable myRunnableThread = new CountDownRunner();
         myThread = new Thread(myRunnableThread);
         myThread.start();
+
+        //listener to button
+        btn = (ImageButton) findViewById(R.id.button_work);
+        btn.setOnClickListener(this);
 
     }
 
@@ -96,21 +101,20 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 try {
                     TextView txtCurrentTime1 = (TextView) findViewById(R.id.time1);
-                    TextView txtCurrentTime2 = (TextView) findViewById(R.id.time2);
-                    TextView txtCurrentTime3 = (TextView) findViewById(R.id.time3);
-                    Date dt = new Date();
-                    int hours = dt.getHours();
-                    int minutes = dt.getMinutes();
-                    int seconds = dt.getSeconds();
-                    String curTime = hours + ":" + minutes + ":" + seconds;
-                    txtCurrentTime1.setText(curTime);
-                    txtCurrentTime2.setText(curTime);
-                    txtCurrentTime3.setText(curTime);
+                    String time = getTime();
+                    txtCurrentTime1.setText("Current time: " + time);
                 } catch (Exception e) {
 
                 }
             }
         });
+    }
+
+    @NonNull
+    private String getTime() {
+        Date dt = Calendar.getInstance().getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH.mm.ss");
+        return formatter.format(dt);
     }
 
     class CountDownRunner implements Runnable {
@@ -128,6 +132,27 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        updateStatus();
+    }
+
+    private void updateStatus() {
+        TextView txtCurrentTime2 = (TextView) findViewById(R.id.time2);
+        TextView txtCurrentTime3 = (TextView) findViewById(R.id.time3);
+        String time = getTime();
+        if (!inWork) {
+            btn.setBackgroundResource(R.drawable.stop);
+            txtCurrentTime2.setText("Arrival time: " + time);
+            txtCurrentTime3.setText("");
+            inWork = true;
+        } else {
+            btn.setBackgroundResource(R.drawable.play);
+            txtCurrentTime3.setText("Leaving time: " + time);
+            inWork = false;
+        }
     }
 
     @Override
