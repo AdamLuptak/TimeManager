@@ -1,12 +1,13 @@
 package com.example.aluptak.timemanagermenu;
 
-import android.app.AlertDialog;
+import android.annotation.TargetApi;
+import android.app.Application;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,43 +19,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.aluptak.timemanagermenu.Dao.DBHelper;
+import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecord;
-import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecordDao;
-import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecordImplSQLite;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     ImageButton btn;
     Boolean inWork = false;
 
-    /**
-     * if true button will add arrivalTime else add leave time
-     */
-    private boolean addArrivalTime = true;
-    DBHelper myDb;
-    WorkTimeRecordDao workTimeRecordDao;
-    private TestDATA testData;
-    private WorkTimeController workTimeController;
+    TextView txtCurrentTime1;
+    TextView txtCurrentTime2;
+    TextView txtCurrentTime3;
 
-    public boolean addTime() throws ParseException {
-//        long testMillisArrived = 1451631600000L;
-//        return workTimeRecordDao.createWorkTimeRecord(new WorkTimeRecord(new Date(testMillisArrived)));
-        return true;
-    }
+    //main field WorkTimeRecord
+    private WorkTimeRecord workTimeRecord;
+    private WorkTimeController workTimeController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,7 +66,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Start updateTime thread
+        //start vlastneho vlakna
         Thread myThread = null;
         Runnable myRunnableThread = new CountDownRunner();
         myThread = new Thread(myRunnableThread);
@@ -87,27 +76,19 @@ public class MainActivity extends AppCompatActivity
         btn = (ImageButton) findViewById(R.id.button_work);
         btn.setOnClickListener(this);
 
+        //set time
+        txtCurrentTime1 = (TextView) findViewById(R.id.time1);
+        txtCurrentTime2 = (TextView) findViewById(R.id.time2);
+        txtCurrentTime3 = (TextView) findViewById(R.id.time3);
+        //mus byt zatial natvrdo treba osetrit NULLPOINTER
+        txtCurrentTime1.setText("00:00:00");
+        txtCurrentTime2.setText("00:00:00");
+        txtCurrentTime3.setText("00:00:00");
 
-        //create DAO database for insert test data just uncoment
-//        workTimeRecordDao = new WorkTimeRecordImplSQLite(new DBHelper(this));
-//        try {
-//            testData = new TestDATA(this);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            testData.testDataToSQLITEDB();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-
+        //initialization of workTimeController
         workTimeController = new WorkTimeController(this);
-        TextView txtCurrentTime1 = (TextView) findViewById(R.id.time1);
-        //Need load from db overtime Value
-        txtCurrentTime1.setText("Over time is: " + workTimeController.getOverTimeFromTesterday());
+        workTimeRecord = workTimeController.getActualWorkingRecord();
 
-        //reset actual day
-        workTimeController.resetActualWorkingRecord();
 
     }
 
@@ -116,9 +97,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 try {
-//                    TextView txtCurrentTime1 = (TextView) findViewById(R.id.time1);
-//                    String time = getTime();
-//                    txtCurrentTime1.setText("Current time: " + time);
+                    String time = getTime();
                 } catch (Exception e) {
                 }
             }
@@ -146,7 +125,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-
     }
 
     @Override
@@ -155,24 +133,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void updateStatus() {
-        TextView txtCurrentTime1 = (TextView) findViewById(R.id.time1);
-        TextView txtCurrentTime2 = (TextView) findViewById(R.id.time2);
-        TextView txtCurrentTime3 = (TextView) findViewById(R.id.time3);
-
         String time = getTime();
         if (!inWork) {
-            inWork = true;
             btn.setBackgroundResource(R.drawable.stop);
             workTimeController.writeArrivalTime();
-            txtCurrentTime2.setText("Arrival time: " + workTimeController.getActualWorkingRecord().getArrivalTime());
-            txtCurrentTime3.setText("");
+            inWork = true;
         } else {
             btn.setBackgroundResource(R.drawable.play);
             workTimeController.writeLeaveTime();
-            txtCurrentTime3.setText("Leaving time: " + workTimeController.getActualWorkingRecord().getLeaveTime());
-            txtCurrentTime1.setText("Over time is: " + workTimeController.getActualWorkingRecord().getOverTimeString());
+            txtCurrentTime3.setText(workTimeRecord.getLeaveTime());
             inWork = false;
         }
+        workTimeRecord = workTimeController.getActualWorkingRecord();
+        txtCurrentTime1.setText(workTimeRecord.getOverTimeString());
+        txtCurrentTime2.setText(workTimeRecord.getArrivalTime());
     }
 
     @Override
@@ -232,9 +206,4 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    protected void onResume() {
-       // workTimeController.resetActualWorkingRecord();
-        super.onResume();
-    }
 }

@@ -24,5 +24,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+    compile 'com.beardedhen:androidbootstrap:2.0.1'
+    compile 'mysql:mysql-connector-java:5.1.6'
 
 }
