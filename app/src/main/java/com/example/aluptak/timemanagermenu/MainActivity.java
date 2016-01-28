@@ -80,15 +80,16 @@ public class MainActivity extends AppCompatActivity
         txtCurrentTime1 = (TextView) findViewById(R.id.time1);
         txtCurrentTime2 = (TextView) findViewById(R.id.time2);
         txtCurrentTime3 = (TextView) findViewById(R.id.time3);
-        //mus byt zatial natvrdo treba osetrit NULLPOINTER
-        txtCurrentTime1.setText("00:00:00");
-        txtCurrentTime2.setText("00:00:00");
-        txtCurrentTime3.setText("00:00:00");
+
 
         //initialization of workTimeController
         workTimeController = new WorkTimeController(this);
         workTimeRecord = workTimeController.getActualWorkingRecord();
 
+        //mus byt zatial natvrdo treba osetrit NULLPOINTER
+        txtCurrentTime1.setText(workTimeRecord.getOverTimeString());
+        txtCurrentTime2.setText(workTimeRecord.getArrivalTime());
+        txtCurrentTime3.setText(workTimeRecord.getLeaveTime());
 
     }
 

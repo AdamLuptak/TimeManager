@@ -1,6 +1,7 @@
 package com.example.aluptak.timemanagermenu.Dao;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -8,6 +9,8 @@ import java.util.Date;
  */
 public class WorkTimeRecord implements Serializable {
 
+    public static final String HH_MM_SS = "HH.mm.ss";
+    public static final String ALTERNATIVEFORMATING = " 00.00.00";
     private Date arrivalDate;
     private Date leaveDate;
     private final long TUNE_NUMBER = 3600000;
@@ -16,15 +19,18 @@ public class WorkTimeRecord implements Serializable {
     private long overTimeMillis;
     final long TUNENUMBER = 3600000; // 1H time shift
     final long WORKING_PERIOD = 30600000; // 8:30 H
+    private SimpleDateFormat formatter;
 
     public WorkTimeRecord(Date arrivalTimeDate, Date leaveTimeDate, Date overtime) {
         super();
         this.arrivalDate = arrivalTimeDate;
         this.leaveDate = leaveTimeDate;
         this.overtime = overtime;
+
     }
 
     public WorkTimeRecord() {
+        this.formatter = new SimpleDateFormat(HH_MM_SS);
     }
 
     public WorkTimeRecord(Date arrivalDate) {
@@ -48,15 +54,28 @@ public class WorkTimeRecord implements Serializable {
     }
 
     public String getArrivalTime() {
-        String formatedArrivalTime = String.format("%d:%d:%d", arrivalDate.getHours(), arrivalDate.getMinutes(),
-                arrivalDate.getSeconds());
-        return formatedArrivalTime;
+        this.formatter = new SimpleDateFormat(HH_MM_SS);
+        String whiteSpace = "";
+        whiteSpace = getStringAlternative(whiteSpace);
+        return (arrivalDate == null) ? ALTERNATIVEFORMATING : whiteSpace + formatter.format(arrivalDate);
+    }
+
+    private String getStringAlternative(String whiteSpace) {
+        if (isMinusValues()) {
+            whiteSpace = " ";
+        }
+        return whiteSpace;
+    }
+
+    private boolean isMinusValues() {
+        return (((overTimeMillis / (1000 * 60 * 60)) % 24)) <= 0;
     }
 
     public String getLeaveTime() {
-        String formatedArrivalTime = String.format("%d:%d:%d", leaveDate.getHours(), leaveDate.getMinutes(),
-                leaveDate.getSeconds());
-        return formatedArrivalTime;
+        this.formatter = new SimpleDateFormat(HH_MM_SS);
+        String whiteSpace = "";
+        whiteSpace = getStringAlternative(whiteSpace);
+        return (leaveDate == null) ? ALTERNATIVEFORMATING : whiteSpace + formatter.format(leaveDate);
     }
 
     public String getWorkingTime() {
@@ -81,9 +100,18 @@ public class WorkTimeRecord implements Serializable {
         return overtime;
     }
 
+     //      return (((overTimeMillis / (1000 * 60 * 60)) % 24)) + ":" +
+    //      (((overTimeMillis / (1000 * 60)) % 60)) + ":" + ((overTimeMillis / 1000) % 60);
     public String getOverTimeString() {
-        return (((overTimeMillis / (1000 * 60 * 60)) % 24)) + ":" +
-                (((overTimeMillis / (1000 * 60)) % 60)) + ":" + ((overTimeMillis / 1000) % 60);
+        this.formatter = new SimpleDateFormat(HH_MM_SS);
+        Date date = new Date(overTimeMillis);
+        String minus = "";
+        if (isMinusValues()) {
+            minus = "-";
+        } else {
+            minus = " ";
+        }
+        return (overTimeMillis == 0) ? ALTERNATIVEFORMATING : minus + formatter.format(date);
     }
 
 
