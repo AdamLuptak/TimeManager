@@ -57,7 +57,7 @@ public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao {
     @Override
     public void updateWorkTimeRecord(WorkTimeRecord workTimeRecord) {
         myDb.updateWorkTimeRecord(workTimeRecord);
-        Log.e("sdfddddddddddddddf", myDb.updateWorkTimeRecord(workTimeRecord).toString());
+        Log.e("Check actual day data: ", myDb.updateWorkTimeRecord(workTimeRecord).toString());
     }
 
     @Override

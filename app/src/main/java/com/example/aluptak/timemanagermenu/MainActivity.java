@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        workTimeController.resetActualWorkingRecord();
+       // workTimeController.resetActualWorkingRecord();
         super.onResume();
     }
 }
