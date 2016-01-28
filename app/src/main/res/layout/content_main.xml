@@ -10,42 +10,112 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.aluptak.timemanagermenu.MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/app_bar_main"
+    android:background="#ffffff">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/time1"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp" />
+        android:id="@+id/tableLayout"
+        android:stretchColumns="0"
+        android:layout_below="@+id/title"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/time2"
-        android:layout_below="@+id/time1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp" />
+        <TableRow>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/time3"
-        android:layout_below="@+id/time2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextFont"
+                android:textColor="#416600"
+                android:layout_column="0"
+                android:text="Overtime:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_gravity="left|center"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/time1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Time"
+                android:textSize="45dp"
+                android:layout_column="1"
+                android:elegantTextHeight="false"
+                android:layout_gravity="left|center" />
+        </TableRow>
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextFont"
+                android:textColor="#0090a8"
+                android:layout_column="0"
+                android:text="Leave Time:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_gravity="left|center"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/time2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Time"
+                android:textSize="45dp"
+                android:layout_column="1"
+                android:layout_gravity="left|center" />
+
+        </TableRow>
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#c53e3e"
+                style="@style/TextFont"
+                android:layout_column="0"
+                android:text="Leave Time with OT:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_gravity="left|center"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/time3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Time"
+                android:textSize="45dp"
+                android:layout_column="1"
+                android:layout_gravity="center|right" />
+        </TableRow>
+    </TableLayout>
+
 
     <ImageButton
+        android:id="@+id/button_work"
         android:layout_width="192dp"
         android:layout_height="192dp"
-        android:id="@+id/button_work"
         android:background="@drawable/play"
-        android:layout_below="@+id/time3"
+        android:onClick="onClick"
+        android:layout_marginTop="18dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp"
-        android:onClick="onClick" />
+        android:layout_below="@+id/tableLayout" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="40dp"
+        style="@style/TextFont"
+        android:text="Today"
+        android:id="@+id/title"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+
 </RelativeLayout>
