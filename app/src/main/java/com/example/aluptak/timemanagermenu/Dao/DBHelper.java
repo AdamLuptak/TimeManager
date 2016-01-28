@@ -93,6 +93,29 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public WorkTimeRecord updateWorkTimeRecord(WorkTimeRecord workTimeRecord){
+        //find record in DB
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from WorkingTimeRecords where arrivalDate = 1451631600000", null);
+        WorkTimeRecord wk = new WorkTimeRecord();
+
+            String millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
+            Long testMillis = Long.parseLong(millistString);
+
+            wk.setArrivalTimeDate(new Date(testMillis));
+            millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_LEAVEDATE));
+
+            if (millistString != null) {
+                testMillis = Long.parseLong(millistString);
+                wk.setLeaveTimeDate(new Date(testMillis));
+            }
+            testMillis = res.getLong(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_OVERTIME));
+            if (testMillis != 0) {
+                wk.getOvertimeMillis(testMillis);
+            }
+        return workTimeRecord;
+    }
+
     public Integer deleteContact(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("contacts",

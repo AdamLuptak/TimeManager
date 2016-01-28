@@ -43,24 +43,14 @@ public class MainActivity extends AppCompatActivity
      */
     private boolean addArrivalTime = true;
     DBHelper myDb;
-    WorkTimeRecordImplSQLite workTimeRecordDao;
+    WorkTimeRecordDao workTimeRecordDao;
+    private TestDATA testData;
+
 
     public boolean addTime() throws ParseException {
-//        myDb = new DBHelper(this);
-//        if(myDb.insertContact("1451631600000","1451658600000",0L)){
-//            Toast.makeText(this, "Dalo do databazi", Toast.LENGTH_SHORT).show();
-//        }
-        long testMillisArrived = 1451631600000L;
-        return workTimeRecordDao.createWorkTimeRecord(new WorkTimeRecord(new Date(testMillisArrived)));
-
-        // Iterator itr = myDb.getAllCotacts().iterator();
-//        while(itr.hasNext()){
-//            Object element = itr.next();
-//            String h = element.toString();
-//            DateFormat format = new SimpleDateFormat("MMMM d, yyyy");
-//            Date date = format.parse(h);
-//            Log.e("moja", date.toString());
-//        }
+//        long testMillisArrived = 1451631600000L;
+//        return workTimeRecordDao.createWorkTimeRecord(new WorkTimeRecord(new Date(testMillisArrived)));
+        return true;
     }
 
     @Override
@@ -102,6 +92,16 @@ public class MainActivity extends AppCompatActivity
 
         //create DAO database
         workTimeRecordDao = new WorkTimeRecordImplSQLite(new DBHelper(this));
+        try {
+            testData = new TestDATA(this);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            testData.testDataToSQLITEDB();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
     }
 

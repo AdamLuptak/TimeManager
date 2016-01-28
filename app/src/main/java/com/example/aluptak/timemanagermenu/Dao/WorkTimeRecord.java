@@ -81,6 +81,14 @@ public class WorkTimeRecord implements Serializable {
         return overtime;
     }
 
+    public long getOverTimeMillis() {
+        return overTimeMillis;
+    }
+
+    public void setOverTimeMillis(long overTimeMillis) {
+        this.overTimeMillis = overTimeMillis;
+    }
+
     public void setOvertime(Date overtime) {
         this.overtime = overtime;
     }

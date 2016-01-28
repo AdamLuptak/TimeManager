@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,7 +56,8 @@ public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao {
 
     @Override
     public void updateWorkTimeRecord(WorkTimeRecord workTimeRecord) {
-
+         myDb.updateWorkTimeRecord(workTimeRecord);
+       // Log.e("sdfddddddddddddddf",myDb.updateWorkTimeRecord(workTimeRecord).toString());
     }
 
     @Override
