@@ -91,7 +91,6 @@ public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao {
 
     /**
      * Return overtime in millis from yesterday
-     * @param workTimeRecord
      * @return
      */
     @Override

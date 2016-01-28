@@ -100,7 +100,7 @@ public class TestDATA {
         testMillisArrived = 1451658600000L; // 1-1-2016 15:30:0
         workTimeRecord.setLeaveTimeDate(new Date(testMillisArrived));
         long overTimeForThisDay = workTimeRecord.getOvertimeMillis(overTimeFromYesterday);
-        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
+//        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
         this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
 
         testMillisArrived = 1454310000000l; // 2-1-2016 8:00:0
@@ -111,7 +111,7 @@ public class TestDATA {
         testMillisArrived = 1454344200000l; // 2-1-2016 17:30:0
         workTimeRecord.setLeaveTimeDate(new Date(testMillisArrived));
         overTimeForThisDay = workTimeRecord.getOvertimeMillis(overTimeFromYesterday);
-        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
+//        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
         this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
 
         testMillisArrived = 1456812000000l; // 3-1-2016 7:00:0
@@ -122,7 +122,7 @@ public class TestDATA {
         testMillisArrived = 1456855200000l; // 3-1-2016 19:00:0
         workTimeRecord.setLeaveTimeDate(new Date(testMillisArrived));
         overTimeForThisDay = workTimeRecord.getOvertimeMillis(overTimeFromYesterday);
-        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
+//        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
         this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
     }
 
