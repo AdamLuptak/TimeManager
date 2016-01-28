@@ -74,4 +74,9 @@ public interface WorkTimeRecordDao {
      */
     public WorkTimeRecord getYesterdayWorkTimeRecord();
 
+    /**
+     * Return yesterday overtime value
+     * @return yestrday time in long
+     */
+    public long getYesterdayOverTime();
 }

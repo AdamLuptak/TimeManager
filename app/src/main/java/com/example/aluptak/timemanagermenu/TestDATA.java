@@ -40,7 +40,7 @@ public class TestDATA {
         Date dateObjectArrival = sdf.parse(dateString);
         dateString = "1-1-2016 15:30:0";
         Date leaveObjectArrival = sdf.parse(dateString);
-
+        long overTimeMillis;
         WorkTimeRecord wk = new WorkTimeRecord(dateObjectArrival, leaveObjectArrival, null);
         System.out.println("arrival time: " + wk.getArrivalTime());
         System.out.println("leave time: " + wk.getLeaveTime());
@@ -95,28 +95,35 @@ public class TestDATA {
         long testMillisArrived = 1451631600000L; // 1/1/2016 8:00:00
         WorkTimeRecord workTimeRecord=  new WorkTimeRecord(new Date(testMillisArrived));
         this.workTimeRecordDao.createWorkTimeRecord(workTimeRecord);
-        long overTimeFromYesterday = 0L;
+        long overTimeFromYesterday = 0l;
         // update with leaveTime
-        testMillisArrived = 1454310000000L; // 1-1-2016 15:30:0
+        testMillisArrived = 1451658600000L; // 1-1-2016 15:30:0
         workTimeRecord.setLeaveTimeDate(new Date(testMillisArrived));
         long overTimeForThisDay = workTimeRecord.getOvertimeMillis(overTimeFromYesterday);
-        //this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
+        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
+        this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
+
+        testMillisArrived = 1454310000000l; // 2-1-2016 8:00:0
+        workTimeRecord=  new WorkTimeRecord(new Date(testMillisArrived));
         this.workTimeRecordDao.createWorkTimeRecord(workTimeRecord);
-        // next day
+        overTimeFromYesterday = this.workTimeRecordDao.getYesterdayOverTime();
+        // update with leaveTime
+        testMillisArrived = 1454344200000l; // 2-1-2016 17:30:0
+        workTimeRecord.setLeaveTimeDate(new Date(testMillisArrived));
+        overTimeForThisDay = workTimeRecord.getOvertimeMillis(overTimeFromYesterday);
+        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
+        this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
 
-        testMillisArrived = 1451658600000L; // 2-1-2016 8:00:0
-        this.workTimeRecordDao.createWorkTimeRecord(new WorkTimeRecord(new Date(testMillisArrived)));
-
-        testMillisArrived = 1454344200000L; // 2-1-2016 17:30:0
-        this.workTimeRecordDao.createWorkTimeRecord(new WorkTimeRecord(new Date(testMillisArrived)));
-
-        // next day
-
-        testMillisArrived = 1456812000000L; // 3-1-2016 7:00:0
-        this.workTimeRecordDao.createWorkTimeRecord(new WorkTimeRecord(new Date(testMillisArrived)));
-
-        testMillisArrived = 1456855200000L; // 3-1-2016 19:00:0
-        this.workTimeRecordDao.createWorkTimeRecord(new WorkTimeRecord(new Date(testMillisArrived)));
+        testMillisArrived = 1456812000000l; // 3-1-2016 7:00:0
+        workTimeRecord=  new WorkTimeRecord(new Date(testMillisArrived));
+        this.workTimeRecordDao.createWorkTimeRecord(workTimeRecord);
+        overTimeFromYesterday = this.workTimeRecordDao.getYesterdayOverTime();
+        // update with leaveTime
+        testMillisArrived = 1456855200000l; // 3-1-2016 19:00:0
+        workTimeRecord.setLeaveTimeDate(new Date(testMillisArrived));
+        overTimeForThisDay = workTimeRecord.getOvertimeMillis(overTimeFromYesterday);
+        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
+        this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
     }
 
 

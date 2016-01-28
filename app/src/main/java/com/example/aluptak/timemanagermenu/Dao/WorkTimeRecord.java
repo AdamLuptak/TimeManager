@@ -81,6 +81,7 @@ public class WorkTimeRecord implements Serializable {
         return overtime;
     }
 
+
     public long getOverTimeMillis() {
         return overTimeMillis;
     }
@@ -104,9 +105,11 @@ public class WorkTimeRecord implements Serializable {
     @Override
     public String toString() {
         return "WorkTimeRecord{" +
+                "work time" +  getWorkingTime() +
                 "arrivalDate=" + arrivalDate +
                 ", leaveDate=" + leaveDate +
-                ", overTime= " + overTimeMillis +
-                '}';
+                "overtime millis: " +overTimeMillis +
+                ", overTime= " + (((overTimeMillis / (1000 * 60 * 60)) % 24)) + ":"+
+                (((overTimeMillis / (1000 * 60)) % 60)) + ":" + ((overTimeMillis / 1000) % 60) +"}";
     }
 }

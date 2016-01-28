@@ -56,8 +56,8 @@ public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao {
 
     @Override
     public void updateWorkTimeRecord(WorkTimeRecord workTimeRecord) {
-         myDb.updateWorkTimeRecord(workTimeRecord);
-       // Log.e("sdfddddddddddddddf",myDb.updateWorkTimeRecord(workTimeRecord).toString());
+        myDb.updateWorkTimeRecord(workTimeRecord);
+        Log.e("sdfddddddddddddddf", myDb.updateWorkTimeRecord(workTimeRecord).toString());
     }
 
     @Override
@@ -87,5 +87,15 @@ public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao {
         String nam = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
         Toast.makeText(null, "pridal som do databazy " + nam, Toast.LENGTH_SHORT).show();
         return null;
+    }
+
+    /**
+     * Return overtime in millis from yesterday
+     * @param workTimeRecord
+     * @return
+     */
+    @Override
+    public long getYesterdayOverTime() {
+        return myDb.getYesterday();
     }
 }

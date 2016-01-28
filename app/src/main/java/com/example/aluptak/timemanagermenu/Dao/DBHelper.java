@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String CONTACTS_COLUMN_ARRIVALDATE = "arrivalDate";
     public static final String CONTACTS_COLUMN_LEAVEDATE = "leaveDate";
     public static final String CONTACTS_COLUMN_OVERTIME = "overtime";
+    public static final String GET_LAST_BUT_ONE_ROW = "select * from(select * from WorkingTimeRecords  order by id desc limit 2) order by id asc limit 1;";
     private HashMap hp;
 
     public DBHelper(Context context) {
@@ -71,7 +73,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor getData(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from contacts where id=" + id + "", null);
+        Cursor res = db.rawQuery("select * from WorkingTimeRecords where id=" + id + "", null);
         return res;
     }
 
@@ -93,26 +95,58 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public WorkTimeRecord updateWorkTimeRecord(WorkTimeRecord workTimeRecord){
-        //find record in DB
+    public Integer getIdOfWorkDayRecordMappedByArrivalTime(WorkTimeRecord workTimeRecord) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from WorkingTimeRecords where arrivalDate = 1451631600000", null);
+        Cursor res = db.rawQuery("select * from WorkingTimeRecords where arrivalDate = " + workTimeRecord.getArrivalTimeDate().getTime() + "", null);
+        res.moveToFirst();
         WorkTimeRecord wk = new WorkTimeRecord();
 
+        int idProductIwantUpadte = 0;
+        while (res.isAfterLast() == false) {
+            idProductIwantUpadte = res.getInt(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ID));
+            res.moveToNext();
+        }
+        return idProductIwantUpadte;
+    }
+
+    /**
+     * Update in DB workTimeRecord in DB and return update Object
+     *
+     * @param workTimeRecord
+     * @return Update Object WorkTimeRecord
+     */
+    public WorkTimeRecord updateWorkTimeRecord(WorkTimeRecord workTimeRecord) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        //find record in DB
+        int id = getIdOfWorkDayRecordMappedByArrivalTime(workTimeRecord);
+        // Update record in DB
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("overtime", workTimeRecord.getOverTimeMillis());
+        contentValues.put("leaveDate", workTimeRecord.getLeaveTimeDate().getTime());
+        db.update("WorkingTimeRecords", contentValues, "id = ? ", new String[]{Integer.toString(id)});
+
+        //reload actual product from DB
+        Cursor res = db.rawQuery("select * from WorkingTimeRecords where arrivalDate = " + workTimeRecord.getArrivalTimeDate().getTime() + "", null);
+        res.moveToFirst();
+        while (res.isAfterLast() == false) {
             String millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
             Long testMillis = Long.parseLong(millistString);
 
-            wk.setArrivalTimeDate(new Date(testMillis));
+            workTimeRecord.setArrivalTimeDate(new Date(testMillis));
             millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_LEAVEDATE));
 
             if (millistString != null) {
                 testMillis = Long.parseLong(millistString);
-                wk.setLeaveTimeDate(new Date(testMillis));
+                workTimeRecord.setLeaveTimeDate(new Date(testMillis));
             }
+
             testMillis = res.getLong(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_OVERTIME));
+
             if (testMillis != 0) {
-                wk.getOvertimeMillis(testMillis);
+                workTimeRecord.setOverTimeMillis(testMillis);
             }
+            res.moveToNext();
+        }
         return workTimeRecord;
     }
 
@@ -122,6 +156,25 @@ public class DBHelper extends SQLiteOpenHelper {
                 "id = ? ",
                 new String[]{Integer.toString(id)});
     }
+
+    public long getYesterday() {
+        //select * from(select * from WorkingTimeRecords  order by id desc limit 2) order by id asc limit 1;
+        long overTimeFormLastButNotOne = 0l;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(GET_LAST_BUT_ONE_ROW, null);
+        res.moveToFirst();
+        if (res != null) {
+            while (res.isAfterLast() == false) {
+                long testMillis = res.getLong(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_OVERTIME));
+                if (testMillis != 0) {
+                    overTimeFormLastButNotOne = testMillis;
+                }
+                res.moveToNext();
+            }
+        }
+        return overTimeFormLastButNotOne;
+    }
+
 
     public ArrayList<String> getAllCotacts() {
         ArrayList<String> array_list = new ArrayList<String>();
@@ -138,7 +191,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return array_list;
     }
 
-    public List<WorkTimeRecord> getAllWorkTimeRecords(){
+    public List<WorkTimeRecord> getAllWorkTimeRecords() {
         List<WorkTimeRecord> workTimeRecordList = new ArrayList<WorkTimeRecord>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from WorkingTimeRecords", null);
