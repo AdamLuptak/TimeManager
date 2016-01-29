@@ -1,7 +1,7 @@
 package com.example.aluptak.timemanagermenu;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.example.aluptak.timemanagermenu.Dao.DBHelper;
 import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecord;
@@ -9,6 +9,7 @@ import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecordDao;
 import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecordImplSQLite;
 
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Created by vmino on 27/01/2016.
@@ -59,7 +60,7 @@ public class WorkTimeController {
      * counts new leaveTime, leaveTimeWithOT
      */
     public void writeArrivalTime() {
-        this.actualWorkingRecord = new WorkTimeRecord(new Date());
+        this.actualWorkingRecord.setArrivalTimeDate(new Date());
         this.workTimeRecordDao.createWorkTimeRecord(this.actualWorkingRecord);
     }
 
@@ -70,9 +71,14 @@ public class WorkTimeController {
     public void writeLeaveTime() {
         long overTimeFromYesterday = this.workTimeRecordDao.getYesterdayOverTime();
         this.actualWorkingRecord.setLeaveTimeDate(new Date());
-        long overTimeForThisDay = actualWorkingRecord.getOvertimeMillis(overTimeFromYesterday);
-        actualWorkingRecord.setOverTimeMillis(overTimeForThisDay);
+        //long overTimeForThisDay = actualWorkingRecord.getOvertimeMillisNEPOUZIVAT(overTimeFromYesterday);
+      //actualWorkingRecord.setOverTimeMillis(overTimeForThisDay);
         this.workTimeRecordDao.updateWorkTimeRecord(actualWorkingRecord);
+
+        Iterator it =  workTimeRecordDao.getAllWorkForThisWeek().iterator();
+        while(it.hasNext()){
+            Log.e("vypis z databazi",it.next().toString());
+        }
     }
 
     public String getOverTimeFromTesterday() {

@@ -97,4 +97,9 @@ public class WorkTimeRecordImplSQLite implements WorkTimeRecordDao {
     public long getYesterdayOverTime() {
         return myDb.getYesterday();
     }
+
+    @Override
+    public WorkTimeRecord getLastRecord() {
+        return myDb.getLastWorkTimeRecord();
+    }
 }

@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity
         workTimeController = new WorkTimeController(this);
         workTimeRecord = workTimeController.getActualWorkingRecord();
 
-        //mus byt zatial natvrdo treba osetrit NULLPOINTER
         txtCurrentTime1.setText(workTimeRecord.getOverTimeString());
         txtCurrentTime2.setText(workTimeRecord.getArrivalTime());
         txtCurrentTime3.setText(workTimeRecord.getLeaveTime());

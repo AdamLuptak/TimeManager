@@ -1,7 +1,6 @@
 package com.example.aluptak.timemanagermenu;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.aluptak.timemanagermenu.Dao.DBHelper;
 import com.example.aluptak.timemanagermenu.Dao.WorkTimeRecord;
@@ -47,7 +46,7 @@ public class TestDATA {
         System.out.println("totalWoking time this day: " + wk.getWorkingTime());
 
 
-        overTimeMillis = wk.getOvertimeMillis(0l);
+        overTimeMillis = wk.getOvertimeMillisNEPOUZIVAT(0l);
         System.out.println("overtime time: " + ((overTimeMillis / (1000 * 60 * 60)) % 24) + ":"
                 + ((overTimeMillis / (1000 * 60)) % 60) + ":" + (overTimeMillis / 1000) % 60);
 
@@ -64,7 +63,7 @@ public class TestDATA {
         System.out.println("leave time: " + wk1.getLeaveTime());
         System.out.println("totalWoking time this day: " + wk1.getWorkingTime());
 
-        overTimeMillis = wk1.getOvertimeMillis(overTimeMillis);
+        overTimeMillis = wk1.getOvertimeMillisNEPOUZIVAT(overTimeMillis);
         System.out.println("overtime time: " + ((overTimeMillis / (1000 * 60 * 60)) % 24) + ":"
                 + ((overTimeMillis / (1000 * 60)) % 60) + ":" + (overTimeMillis / 1000) % 60);
 
@@ -81,7 +80,7 @@ public class TestDATA {
         System.out.println("leave time: " + wk2.getLeaveTime());
         System.out.println("totalWoking time this day: " + wk2.getWorkingTime());
 
-        overTimeMillis = wk2.getOvertimeMillis(overTimeMillis);
+        overTimeMillis = wk2.getOvertimeMillisNEPOUZIVAT(overTimeMillis);
         System.out.println("overtime time: " + ((overTimeMillis / (1000 * 60 * 60)) % 24) + ":"
                 + ((overTimeMillis / (1000 * 60)) % 60) + ":" + (overTimeMillis / 1000) % 60);
     }
@@ -99,7 +98,7 @@ public class TestDATA {
         // update with leaveTime
         testMillisArrived = 1451658600000L; // 1-1-2016 15:30:0
         workTimeRecord.setLeaveTimeDate(new Date(testMillisArrived));
-        long overTimeForThisDay = workTimeRecord.getOvertimeMillis(overTimeFromYesterday);
+        //long overTimeForThisDay = workTimeRecord.getOvertimeMillisNEPOUZIVAT(overTimeFromYesterday);
 //        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
         this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
 
@@ -110,7 +109,7 @@ public class TestDATA {
         // update with leaveTime
         testMillisArrived = 1454344200000l; // 2-1-2016 17:30:0
         workTimeRecord.setLeaveTimeDate(new Date(testMillisArrived));
-        overTimeForThisDay = workTimeRecord.getOvertimeMillis(overTimeFromYesterday);
+       // overTimeForThisDay = workTimeRecord.getOvertimeMillisNEPOUZIVAT(overTimeFromYesterday);
 //        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
         this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
 
@@ -121,7 +120,7 @@ public class TestDATA {
         // update with leaveTime
         testMillisArrived = 1456855200000l; // 3-1-2016 19:00:0
         workTimeRecord.setLeaveTimeDate(new Date(testMillisArrived));
-        overTimeForThisDay = workTimeRecord.getOvertimeMillis(overTimeFromYesterday);
+        //overTimeForThisDay = workTimeRecord.getOvertimeMillisNEPOUZIVAT(overTimeFromYesterday);
 //        workTimeRecord.setOverTimeMillis(overTimeForThisDay);
         this.workTimeRecordDao.updateWorkTimeRecord(workTimeRecord);
     }

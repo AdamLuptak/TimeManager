@@ -6,9 +6,13 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
+import com.mysql.jdbc.StringUtils;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +29,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String CONTACTS_COLUMN_LEAVEDATE = "leaveDate";
     public static final String CONTACTS_COLUMN_OVERTIME = "overtime";
     public static final String GET_LAST_BUT_ONE_ROW = "select * from(select * from WorkingTimeRecords  order by id desc limit 2) order by id asc limit 1;";
+    public static final String GET_LAST_TIMERECORD = "select * from WorkingTimeRecords  order by id desc limit 1";
+    public static final String DAY_OF_WEEK = "dayOfWeek";
+    public static final String WORRKTIME = "workTime";
     private HashMap hp;
 
     public DBHelper(Context context) {
@@ -32,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
         this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS WorkingTimeRecords");
         this.getWritableDatabase().execSQL(
                 "create table WorkingTimeRecords " +
-                        "(id integer primary key autoincrement, arrivalDate TEXT, leaveDate TEXT, overtime INTEGER)"
+                        "(id integer primary key autoincrement, arrivalDate TEXT, leaveDate TEXT, overtime INTEGER, workTime INTEGER, dayOfWeek TEXT)"
         );
     }
 
@@ -41,7 +48,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         db.execSQL(
                 "create table WorkingTimeRecords " +
-                        "(id integer primary key autoincrement, arrivalDate TEXT, leaveDate TEXT, overtime INTEGER)"
+                        "(id integer primary key autoincrement, arrivalDate TEXT, leaveDate TEXT, overtime INTEGER ,workTime INTEGER, dayOfWeek TEXT)"
         );
     }
 
@@ -66,7 +73,11 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("arrivalDate", arrivalDate);
-        contentValues.put("overtime", overTime);
+        //contentValues.put("overtime", overTime);
+        Date date = new Date(Long.valueOf(arrivalDate));
+        DateFormat sdf1 = new SimpleDateFormat("EEE-MM-dd-yyyy");
+        contentValues.put("dayOfWeek", sdf1.format(date));
+
         long result = db.insert("WorkingTimeRecords", null, contentValues);
         return (result != -1) ? true : false;
     }
@@ -194,7 +205,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<WorkTimeRecord> getAllWorkTimeRecords() {
         List<WorkTimeRecord> workTimeRecordList = new ArrayList<WorkTimeRecord>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from WorkingTimeRecords", null);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+        DateFormat sdf12 = new SimpleDateFormat("EEE-MM-dd-yyyy");
+        //'pi-01-29-2016'
+        Cursor res = db.rawQuery("select * from WorkingTimeRecords where dayOfWeek = '"+ sdf12.format(calendar.getTime())+"'" , null);
         res.moveToFirst();
         String nam = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
         WorkTimeRecord wk = new WorkTimeRecord();
@@ -203,8 +219,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
             String millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
             Long testMillis = Long.parseLong(millistString);
-
             wk.setArrivalTimeDate(new Date(testMillis));
+
             millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_LEAVEDATE));
 
             if (millistString != null) {
@@ -213,12 +229,47 @@ public class DBHelper extends SQLiteOpenHelper {
             }
 
             testMillis = res.getLong(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_OVERTIME));
+
             if (testMillis != 0) {
-                wk.getOvertimeMillis(testMillis);
+                //wk.getOvertimeMillisNEPOUZIVAT(testMillis);
             }
+
+            millistString = res.getString(res.getColumnIndex(DBHelper.DAY_OF_WEEK));
+
+            if (millistString != null) {
+                wk.setDayOfWeek(millistString);
+            }
+
             workTimeRecordList.add(wk);
             res.moveToNext();
         }
         return workTimeRecordList;
     }
+
+    public WorkTimeRecord getLastWorkTimeRecord() {
+        WorkTimeRecord workTimeRecord = new WorkTimeRecord();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(GET_LAST_TIMERECORD, null);
+        res.moveToFirst();
+        if (res != null) {
+            while (res.isAfterLast() == false) {
+                String millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
+
+                if (millistString != null) {
+                    Long testMillis = Long.parseLong(millistString);
+                    workTimeRecord.setArrivalTimeDate(new Date(testMillis));
+                }
+
+                millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_LEAVEDATE));
+
+                if (millistString != null) {
+                    Long testMillis = Long.parseLong(millistString);
+                    workTimeRecord.setLeaveTimeDate(new Date(testMillis));
+                }
+                res.moveToNext();
+            }
+        }
+        return workTimeRecord;
+    }
+
 }

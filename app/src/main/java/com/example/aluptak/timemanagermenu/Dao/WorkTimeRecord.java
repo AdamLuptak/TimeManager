@@ -1,6 +1,7 @@
 package com.example.aluptak.timemanagermenu.Dao;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ public class WorkTimeRecord implements Serializable {
     private Date leaveDate;
     private final long TUNE_NUMBER = 3600000;
     private Date overtime;
-    private int dayOfWeek;
+    private String dayOfWeek;
     private long overTimeMillis;
     final long TUNENUMBER = 3600000; // 1H time shift
     final long WORKING_PERIOD = 30600000; // 8:30 H
@@ -43,6 +44,8 @@ public class WorkTimeRecord implements Serializable {
 
     public void setArrivalTimeDate(Date arrivalTimeDate) {
         this.arrivalDate = arrivalTimeDate;
+        DateFormat sdf1 = new SimpleDateFormat("EEE-MM-dd-yyyy");
+        this.dayOfWeek = sdf1.format(arrivalTimeDate);
     }
 
     public Date getLeaveTimeDate() {
@@ -81,17 +84,17 @@ public class WorkTimeRecord implements Serializable {
     public String getWorkingTime() {
         //pozoro NUllPOINTER
         Date diff = new Date(this.leaveDate.getTime() - this.arrivalDate.getTime() - TUNE_NUMBER);
-        String formatedWorkingTime = String.format("%d:%d:%d", diff.getHours(), diff.getMinutes(), diff.getSeconds());
-        return formatedWorkingTime;
+      //  this.formatter = new SimpleDateFormat(HH_MM_SS);
+        return formatter.format(diff);
     }
 
-    public long getOvertimeMillis(long last) {
+    public long getOvertimeMillisNEPOUZIVAT(long last) {
         if (leaveDate != null && arrivalDate != null) {
-            Date diff = new Date(this.leaveDate.getTime() - this.arrivalDate.getTime());
-            long checkForWorkingTimePeriod = diff.getTime() - WORKING_PERIOD;
-            this.overTimeMillis = (diff.getTime() + last) - WORKING_PERIOD;
-            Date overTime = new Date(diff.getTime() - WORKING_PERIOD);
-            return this.overTimeMillis;
+//            Date diff = new Date(this.leaveDate.getTime() - this.arrivalDate.getTime());
+//            long checkForWorkingTimePeriod = diff.getTime() - WORKING_PERIOD;
+//            this.overTimeMillis = (diff.getTime() + last) - WORKING_PERIOD;
+//            Date overTime = new Date(diff.getTime() - WORKING_PERIOD);
+//            return this.overTimeMillis;
         }
         throw new NullPointerException();
     }
@@ -104,7 +107,8 @@ public class WorkTimeRecord implements Serializable {
     //      (((overTimeMillis / (1000 * 60)) % 60)) + ":" + ((overTimeMillis / 1000) % 60);
     public String getOverTimeString() {
         this.formatter = new SimpleDateFormat(HH_MM_SS);
-        Date date = new Date(overTimeMillis);
+        Long absOvertime = Math.abs(overTimeMillis);
+        Date date = new Date(absOvertime - TUNE_NUMBER);
         String minus = "";
         if (isMinusValues()) {
             minus = "-";
@@ -127,22 +131,20 @@ public class WorkTimeRecord implements Serializable {
         this.overtime = overtime;
     }
 
-    public int getDayOfWeek() {
+    public String getDayOfWeek() {
         return dayOfWeek;
     }
 
-    public void setDayOfWeek(int dayOfWeek) {
+    public void setDayOfWeek(String dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
     }
 
     @Override
     public String toString() {
-        return "WorkTimeRecord{" +
-                "work time" + getWorkingTime() +
-                "arrivalDate=" + arrivalDate +
-                ", leaveDate=" + leaveDate +
-                "overtime millis: " + overTimeMillis +
-                ", overTime= " + (((overTimeMillis / (1000 * 60 * 60)) % 24)) + ":" +
-                (((overTimeMillis / (1000 * 60)) % 60)) + ":" + ((overTimeMillis / 1000) % 60) + "}";
+        return "WorkTimeRecord{ " +
+                "\nwork time: " + getWorkingTime() +
+                "\narrivalDate: " + arrivalDate +
+                "\nleaveDate: " + leaveDate +
+                "\nDay of week: " + this.dayOfWeek;
     }
 }

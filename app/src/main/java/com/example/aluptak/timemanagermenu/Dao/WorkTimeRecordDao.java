@@ -63,6 +63,7 @@ public interface WorkTimeRecordDao {
 
     /**
      * Create new record in DB
+     *
      * @param workTimeRecord
      * @return true correct false incorrect
      */
@@ -70,13 +71,23 @@ public interface WorkTimeRecordDao {
 
     /**
      * Return yesterday WorkTimeRecord object
+     *
      * @return WorkTimeRecord
      */
     public WorkTimeRecord getYesterdayWorkTimeRecord();
 
     /**
      * Return yesterday overtime value
+     *
      * @return yestrday time in long
      */
     public long getYesterdayOverTime();
+
+
+    /**
+     * Return last TimeRecordfrom source
+     *
+     * @return Last WorkTimeRecord
+     */
+    public WorkTimeRecord getLastRecord();
 }
