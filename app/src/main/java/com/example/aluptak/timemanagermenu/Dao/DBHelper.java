@@ -210,13 +210,13 @@ public class DBHelper extends SQLiteOpenHelper {
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
         DateFormat sdf12 = new SimpleDateFormat("EEE-MM-dd-yyyy");
         //'pi-01-29-2016'
-        Cursor res = db.rawQuery("select * from WorkingTimeRecords where dayOfWeek = '"+ sdf12.format(calendar.getTime())+"'" , null);
+        Cursor res = db.rawQuery("select * from WorkingTimeRecords where id >= (select id from WorkingTimeRecords where dayOfWeek = '" + sdf12.format(calendar.getTime()) + "')", null);
         res.moveToFirst();
         String nam = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
-        WorkTimeRecord wk = new WorkTimeRecord();
+
 
         while (res.isAfterLast() == false) {
-
+            WorkTimeRecord wk = new WorkTimeRecord();
             String millistString = res.getString(res.getColumnIndex(DBHelper.CONTACTS_COLUMN_ARRIVALDATE));
             Long testMillis = Long.parseLong(millistString);
             wk.setArrivalTimeDate(new Date(testMillis));
